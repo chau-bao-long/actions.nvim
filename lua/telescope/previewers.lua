@@ -408,6 +408,18 @@ previewers.git_file_diff = defaulter(function(_)
   }
 end, {})
 
+previewers.actions = defaulter(function(opts)
+    return previewers.new {
+      preview_fn = function(_, entry, status)
+        with_preview_window(status, nil, function()
+          local actionsInLua = vim.api.nvim_get_var('actionsInLua')
+
+          vim.api.nvim_buf_set_lines(status.preview_bufnr, 0, -1, false, actionsInLua[entry.index][3])
+        end)
+      end
+    }
+end, {})
+
 previewers.cat = defaulter(function(opts)
   local maker = get_maker(opts)
 

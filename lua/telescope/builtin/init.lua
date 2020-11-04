@@ -383,6 +383,38 @@ builtin.command_history = function(opts)
   }):find()
 end
 
+builtin.actions = function(opts)
+  local results = {}
+  local actionsInLua = vim.api.nvim_get_var('actionsInLua')
+  for i = 1, #actionsInLua do
+    table.insert(results, actionsInLua[i][1])
+  end
+
+  pickers.new(opts, {
+      prompt_title = 'Pick your actions',
+      finder = finders.new_table(results),
+      sorter = sorters.get_fzy_sorter(),
+      previewer = previewers.actions.new(opts),
+      attach_mappings = function(prompt_bufnr, map)
+        local execute = function()
+          local selection = actions.get_selected_entry(prompt_bufnr)
+          for i = 1, #actionsInLua do
+            if actionsInLua[i][1] == selection.value then
+              actions.close(prompt_bufnr)
+              vim.cmd(actionsInLua[i][2])
+              break
+            end
+          end
+        end
+
+        map('i', '<CR>', execute)
+        map('n', '<CR>', execute)
+
+        return true
+      end,
+    }):find()
+end
+
 builtin.vim_options = function(opts)
   opts = opts or {}
 
