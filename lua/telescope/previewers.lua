@@ -413,8 +413,8 @@ previewers.actions = defaulter(function(opts)
       preview_fn = function(_, entry, status)
         with_preview_window(status, nil, function()
           local actionsInLua = vim.api.nvim_get_var('actionsInLua')
-
-          vim.api.nvim_buf_set_lines(status.preview_bufnr, 0, -1, false, actionsInLua[entry.index][3])
+          local preview_lines = actionsInLua[entry.index][3] or {}
+          vim.api.nvim_buf_set_lines(status.preview_bufnr, 0, -1, false, preview_lines)
         end)
       end
     }
