@@ -384,8 +384,11 @@ builtin.command_history = function(opts)
 end
 
 builtin.actions = function(opts)
+  utils.data_by_filetype(opts)
+
   local results = {}
-  local actionsInLua = vim.api.nvim_get_var('actionsInLua')
+  local actionsInLua = vim.api.nvim_get_var(opts.data)
+
   for i = 1, #actionsInLua do
     table.insert(results, actionsInLua[i][1])
   end
