@@ -8,10 +8,10 @@ local mappings = {}
 
 mappings.default_mappings = config.values.default_mappings or {
     i = {
-      ["<C-n>"] = actions.move_selection_next,
-      ["<C-p>"] = actions.move_selection_previous,
+      ["<C-j>"] = actions.move_selection_next,
+      ["<C-k>"] = actions.move_selection_previous,
 
-      ["<C-c>"] = actions.close,
+      ["<esc>"] = actions.close,
 
       ["<Down>"] = actions.move_selection_next,
       ["<Up>"] = actions.move_selection_previous,
