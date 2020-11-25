@@ -55,7 +55,7 @@ local keymap_store = setmetatable({}, {
   end
 })
 
-local _mapping_key_id = 0
+local _mapping_key_id = 999
 local get_next_id = function()
   _mapping_key_id = _mapping_key_id + 1
   return _mapping_key_id
