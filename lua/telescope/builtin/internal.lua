@@ -15,6 +15,41 @@ local filter = vim.tbl_filter
 
 local internal = {}
 
+internal.actions = function(opts)
+  utils.data_by_filetype(opts)
+
+  local results = {}
+  local actionsInLua = vim.api.nvim_get_var(opts.data)
+
+  for i = 1, #actionsInLua do
+    table.insert(results, actionsInLua[i][1])
+  end
+
+  pickers.new(opts, {
+    prompt_title = 'Pick your actions',
+    finder = finders.new_table(results),
+    sorter = sorters.get_fzy_sorter(),
+    previewer = previewers.actions.new(opts),
+    attach_mappings = function(prompt_bufnr, map)
+      local execute = function()
+        local selection = actions.get_selected_entry(prompt_bufnr)
+        for i = 1, #actionsInLua do
+          if actionsInLua[i][1] == selection.value then
+            actions.close(prompt_bufnr)
+            vim.cmd(actionsInLua[i][2])
+            break
+          end
+        end
+      end
+
+      map('i', '<CR>', execute)
+      map('n', '<CR>', execute)
+
+      return true
+    end,
+  }):find()
+end
+
 -- TODO: What the heck should we do for accepting this.
 --  vim.fn.setreg("+", "nnoremap $TODO :lua require('telescope.builtin').<whatever>()<CR>")
 -- TODO: Can we just do the names instead?

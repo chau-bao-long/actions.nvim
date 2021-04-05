@@ -8,10 +8,10 @@ local mappings = {}
 
 mappings.default_mappings = config.values.default_mappings or {
     i = {
-      ["<C-n>"] = actions.move_selection_next,
-      ["<C-p>"] = actions.move_selection_previous,
+      ["<C-j>"] = actions.move_selection_next,
+      ["<C-k>"] = actions.move_selection_previous,
 
-      ["<C-c>"] = actions.close,
+      ["<esc>"] = actions.close,
 
       ["<Down>"] = actions.move_selection_next,
       ["<Up>"] = actions.move_selection_previous,
@@ -67,7 +67,7 @@ __TelescopeKeymapStore = __TelescopeKeymapStore or setmetatable({}, {
 })
 local keymap_store = __TelescopeKeymapStore
 
-local _mapping_key_id = 0
+local _mapping_key_id = 999
 local get_next_id = function()
   _mapping_key_id = _mapping_key_id + 1
   return _mapping_key_id

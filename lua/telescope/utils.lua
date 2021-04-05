@@ -5,6 +5,20 @@ local Job     = require('plenary.job')
 
 local utils = {}
 
+utils.data_by_filetype = function(opts)
+  if opts.data ~= 'fromFileType' then
+    return
+  end
+
+  local filetype = vim.api.nvim_eval('&filetype')
+  if filetype == 'java' or filetype == 'groovy' then
+    filetype = 'kotlin'
+    elseif filetype == 'javascriptreact' or filetype == 'typescript' or filetype == 'typescriptreact' then
+    filetype = 'javascript'
+  end
+  opts.data = filetype .. 'Actions'
+end
+
 utils.get_separator = function()
   return pathlib.separator
 end

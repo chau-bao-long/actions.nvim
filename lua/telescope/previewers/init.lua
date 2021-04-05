@@ -280,4 +280,6 @@ previewers.highlights = buffer_previewer.highlights
 --- It doesn't use cache or some other clever tricks.
 previewers.display_content = buffer_previewer.display_content
 
+previewers.actions = buffer_previewer.actions
+
 return previewers

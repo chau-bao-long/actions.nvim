@@ -667,4 +667,16 @@ previewers.display_content = defaulter(function(_)
   }
 end, {})
 
+previewers.actions = defaulter(function(opts)
+  -- return previewers.new_buffer_previewer {
+  --   preview_fn = function(_, entry, status)
+  --     with_preview_window(status, nil, function()
+  --       local actionsInLua = vim.api.nvim_get_var(opts.data)
+  --       local preview_lines = actionsInLua[entry.index][3] or {}
+  --       vim.api.nvim_buf_set_lines(status.preview_bufnr, 0, -1, false, preview_lines)
+  --     end)
+  --   end
+  -- }
+end, {})
+
 return previewers
