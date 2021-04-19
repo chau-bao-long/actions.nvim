@@ -40,7 +40,55 @@ git.commits = function(opts)
     previewer = previewers.git_commit_diff.new(opts),
     sorter = conf.file_sorter(opts),
     attach_mappings = function()
-      actions.goto_file_selection_edit:replace(actions.git_checkout)
+      actions.goto_file_selection_edit:replace(function(prompt_bufnr)
+        local selection = actions.get_selected_entry(prompt_bufnr)
+        actions.close(prompt_bufnr)
+        local val = selection.value
+        local cmd = 'git diff-tree --no-commit-id --name-only -r ' .. val
+        local output = vim.split(utils.get_os_command_output(cmd), '\n')
+        local results = {}
+        for _, v in ipairs(output) do
+          if v ~= "" then
+            table.insert(results, { file = v })
+          end
+        end
+
+        pickers.new(opts, {
+          prompt_title = 'Files in the commit',
+          finder = finders.new_table {
+            results = results,
+            entry_maker = function(entry)
+              return {
+                value = entry.file,
+                ordinal = entry.file,
+                display = entry.file,
+              }
+            end
+          },
+          previewer = previewers.new_termopen_previewer {
+            get_command = function(entry)
+              return {
+                'git',
+                'diff',
+                'HEAD~' .. selection.index - 1,
+                'HEAD~' .. selection.index,
+                '--',
+                entry.value,
+              }
+            end
+          },
+          sorter = conf.file_sorter(opts),
+          attach_mappings = function(prompt_bufnr)
+            actions.goto_file_selection_edit:replace(function(prompt_bufnr)
+              local file_path = actions.get_selected_entry(prompt_bufnr).value
+              vim.cmd('Gedit HEAD~' .. selection.index - 1 .. ':' .. file_path)
+              vim.cmd('Gdiff HEAD~' .. selection.index)
+            end)
+
+            return true
+          end
+        }):find()
+      end)
       return true
     end
   }):find()
@@ -111,6 +159,7 @@ git.status = function(opts)
   for _, v in ipairs(output) do
     if v ~= "" then
       local mod, fname = string.match(v, '(..)%s(.+)')
+      local mod = mod:gsub("%s+", "")
       if mod ~= 'A ' and mod ~= 'M ' and mod ~= 'R ' and mod ~= 'D ' then
         table.insert(results, { mod = mod, file = fname })
       end
@@ -136,10 +185,6 @@ git.status = function(opts)
     },
     previewer = previewers.git_file_diff.new(opts),
     sorter = conf.file_sorter(opts),
-    attach_mappings = function()
-      actions.goto_file_selection_edit:replace(actions.git_add)
-      return true
-    end
   }):find()
 end
 
