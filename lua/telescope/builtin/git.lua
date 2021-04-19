@@ -111,6 +111,7 @@ git.status = function(opts)
   for _, v in ipairs(output) do
     if v ~= "" then
       local mod, fname = string.match(v, '(..)%s(.+)')
+      local mod = mod:gsub("%s+", "")
       if mod ~= 'A ' and mod ~= 'M ' and mod ~= 'R ' and mod ~= 'D ' then
         table.insert(results, { mod = mod, file = fname })
       end
@@ -136,10 +137,6 @@ git.status = function(opts)
     },
     previewer = previewers.git_file_diff.new(opts),
     sorter = conf.file_sorter(opts),
-    attach_mappings = function()
-      actions.goto_file_selection_edit:replace(actions.git_add)
-      return true
-    end
   }):find()
 end
 
