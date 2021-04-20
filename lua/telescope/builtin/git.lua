@@ -28,7 +28,7 @@ git.files = function(opts)
 end
 
 git.commits = function(opts)
-  local cmd = 'git log --pretty=oneline --abbrev-commit'
+  local cmd = 'git log --pretty=oneline --abbrev-commit --no-merges'
   local results = vim.split(utils.get_os_command_output(cmd), '\n')
 
   pickers.new(opts, {
