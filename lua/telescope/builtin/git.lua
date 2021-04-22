@@ -70,8 +70,8 @@ git.commits = function(opts)
               return {
                 'git',
                 'diff',
-                'HEAD~' .. selection.index - 1,
                 'HEAD~' .. selection.index,
+                'HEAD~' .. selection.index - 1,
                 '--',
                 entry.value,
               }
