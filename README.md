@@ -61,6 +61,79 @@ let g:databases = [
 
 ```
 
+Example in Lua
+```lua
+vim.g.commonActions = {
+  {
+    '🔎 files vim config',
+    "Files ~/Projects/dotfiles/.vim/after/plugin/",
+    {
+      ' - Pick a vim config file',
+    }
+  },
+  {
+    '🔎 files vim function',
+    "Files ~/Projects/dotfiles/.vim/autoload/",
+    {
+      ' - Pick a file in ~/Projects/dotfiles/.vim/autoload/ folder',
+    }
+  },
+  {
+    '🔎 files lua modules',
+    "Files ~/Projects/dotfiles/.vim/lua",
+    {
+      ' - Pick a lua module',
+    }
+  },
+  {
+    '🔎 files vim filetype config',
+    "Files ~/.vim/ftplugin/",
+    {
+      ' - Pick a file in ~/.vim/ftplugin/ folder',
+    }
+  },
+  {
+    '🔎 files user bin',
+    "Files ~/bin",
+    {
+      ' - Pick a file in ~/bin folder',
+    }
+  },
+  {
+    '🔎 grep projects',
+    'call common#selectProject("~/Projects", function("common#grepInProjectHandler"), 0)',
+    {
+      ' - Search in one of project in ~/Projects folder',
+    }
+  },
+  {
+    '🔎 zsh config',
+    'tabnew ~/.zshrc',
+  },
+  {
+    '🔎 tmux config',
+    'tabnew ~/.tmux.conf',
+  },
+  {
+    '🔎 user config',
+    "Files ~/.config",
+    {
+      ' - Pick a file in ~/.config folder',
+    }
+  },
+  {'📌 ctags ruby with lib', 'Dispatch! ctags -R --languages=Ruby --exclude=.git --exclude=log . $(bundle list --paths)'},
+  {'📌 ctags ruby', 'Dispatch! ctags -R --languages=Ruby --exclude=.git --exclude=log .'},
+  {'📌 ctags js with lib', 'Dispatch! ctags -R --languages=JavaScript --exclude=.git --exclude=dist --exclude=log .'},
+  {'📌 ctags js', 'Dispatch! ctags -R --languages=JavaScript --exclude=.git --exclude=log --exclude=node_modules --exclude=dist .'},
+  {'📌 ctags python with lib', 'Dispatch! ctags -R --languages=Python --exclude=.git --exclude=log . $(pip show pip | grep Location | cut -d ":" -f 2)'},
+  {'📌 ctags python', 'Dispatch! ctags -R --languages=Python --exclude=.git --exclude=log .'},
+  {'📌 ctags php', 'Dispatch! ctags -R --languages=PHP --exclude=.git --exclude=log .'},
+  {'📌 ctags java with lib', 'Dispatch! ctags -R --languages=java,kotlin --exclude=.git --exclude=log --exclude=.gradle --exclude=.gradle-home --exclude=data . ~/Projects/lib/java'},
+  {'📌 ctags java', 'Dispatch! ctags -R --languages=java,kotlin --exclude=.git --exclude=log --exclude=.gradle --exclude=.gradle-home --exclude=data .'},
+  {'📌 ctags c', 'Dispatch! ctags -R --languages=c,c++ --exclude=.git .'},
+}
+```
+
 #### Commands
 
 ```viml
