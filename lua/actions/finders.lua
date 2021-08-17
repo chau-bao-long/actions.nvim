@@ -1,7 +1,7 @@
 local Job = require('plenary.job')
 
-local make_entry = require('telescope.make_entry')
-local log = require('telescope.log')
+local make_entry = require('actions.make_entry')
+local log = require('actions.log')
 
 local finders = {}
 

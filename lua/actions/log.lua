@@ -1,5 +1,5 @@
 
 return require('plenary.log').new {
-  plugin = 'telescope',
+  plugin = 'actions',
   level = (vim.loop.os_getenv("USER") == 'tj' and 'debug') or 'warn',
 }

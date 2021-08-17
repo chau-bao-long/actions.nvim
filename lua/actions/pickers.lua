@@ -1,21 +1,21 @@
 local a = vim.api
 local popup = require('popup')
 
-require('telescope')
+require('actions')
 
-local actions = require('telescope.actions')
-local config = require('telescope.config')
-local debounce = require('telescope.debounce')
-local resolve = require('telescope.config.resolve')
-local log = require('telescope.log')
-local mappings = require('telescope.mappings')
-local state = require('telescope.state')
-local utils = require('telescope.utils')
+local actions = require('actions.actions')
+local config = require('actions.config')
+local debounce = require('actions.debounce')
+local resolve = require('actions.config.resolve')
+local log = require('actions.log')
+local mappings = require('actions.mappings')
+local state = require('actions.state')
+local utils = require('actions.utils')
 
-local layout_strategies = require('telescope.pickers.layout_strategies')
-local entry_display = require('telescope.pickers.entry_display')
+local layout_strategies = require('actions.pickers.layout_strategies')
+local entry_display = require('actions.pickers.entry_display')
 
-local EntryManager = require('telescope.entry_manager')
+local EntryManager = require('actions.entry_manager')
 
 local get_default = utils.get_default
 
@@ -38,11 +38,11 @@ local extend = function(opts, defaults)
   return result
 end
 
-local ns_telescope_selection = a.nvim_create_namespace('telescope_selection')
-local ns_telescope_entry = a.nvim_create_namespace('telescope_entry')
-local ns_telescope_matching = a.nvim_create_namespace('telescope_matching')
-local ns_telescope_prompt = a.nvim_create_namespace('telescope_prompt')
-local ns_telescope_prompt_prefix = a.nvim_create_namespace('telescope_prompt_prefix')
+local ns_actions_selection = a.nvim_create_namespace('actions_selection')
+local ns_actions_entry = a.nvim_create_namespace('actions_entry')
+local ns_actions_matching = a.nvim_create_namespace('actions_matching')
+local ns_actions_prompt = a.nvim_create_namespace('actions_prompt')
+local ns_actions_prompt_prefix = a.nvim_create_namespace('actions_prompt_prefix')
 
 local pickers = {}
 
@@ -241,7 +241,7 @@ function Picker:highlight_displayed_rows(results_bufnr, prompt)
     return
   end
 
-  vim.api.nvim_buf_clear_namespace(results_bufnr, ns_telescope_matching, 0, -1)
+  vim.api.nvim_buf_clear_namespace(results_bufnr, ns_actions_matching, 0, -1)
 
   local displayed_rows = vim.api.nvim_buf_get_lines(results_bufnr, 0, -1, false)
   for row_index = 1, #displayed_rows do
@@ -258,11 +258,11 @@ function Picker:highlight_one_row(results_bufnr, prompt, display, row)
     for _, hl in ipairs(highlights) do
       local highlight, start, finish
       if type(hl) == 'table' then
-        highlight = hl.highlight or 'TelescopeMatching'
+        highlight = hl.highlight or 'ActionsMatching'
         start = hl.start
         finish = hl.finish or hl.start
       elseif type(hl) == 'number' then
-        highlight = 'TelescopeMatching'
+        highlight = 'ActionsMatching'
         start = hl
         finish = hl
       else
@@ -273,7 +273,7 @@ function Picker:highlight_one_row(results_bufnr, prompt, display, row)
 
       vim.api.nvim_buf_add_highlight(
         results_bufnr,
-        ns_telescope_matching,
+        ns_actions_matching,
         highlight,
         row,
         start - 1,
@@ -325,10 +325,10 @@ function Picker:find()
 
   -- TODO: Should probably always show all the line for results win, so should implement a resize for the windows
   a.nvim_win_set_option(results_win, 'wrap', false)
-  a.nvim_win_set_option(results_win, 'winhl', 'Normal:TelescopeNormal')
+  a.nvim_win_set_option(results_win, 'winhl', 'Normal:ActionsNormal')
   a.nvim_win_set_option(results_win, 'winblend', self.window.winblend)
   local results_border_win = results_opts.border and results_opts.border.win_id
-  if results_border_win then vim.api.nvim_win_set_option(results_border_win, 'winhl', 'Normal:TelescopeResultsBorder') end
+  if results_border_win then vim.api.nvim_win_set_option(results_border_win, 'winhl', 'Normal:ActionsResultsBorder') end
 
 
   local preview_win, preview_opts, preview_bufnr
@@ -336,20 +336,20 @@ function Picker:find()
     preview_win, preview_opts = popup.create('', popup_opts.preview)
     preview_bufnr = a.nvim_win_get_buf(preview_win)
 
-    a.nvim_win_set_option(preview_win, 'winhl', 'Normal:TelescopeNormal')
+    a.nvim_win_set_option(preview_win, 'winhl', 'Normal:ActionsNormal')
     a.nvim_win_set_option(preview_win, 'winblend', self.window.winblend)
     local preview_border_win = preview_opts and preview_opts.border and preview_opts.border.win_id
-    if preview_border_win then vim.api.nvim_win_set_option(preview_border_win, 'winhl', 'Normal:TelescopePreviewBorder') end
+    if preview_border_win then vim.api.nvim_win_set_option(preview_border_win, 'winhl', 'Normal:ActionsPreviewBorder') end
 
   end
 
   -- TODO: We need to center this and make it prettier...
   local prompt_win, prompt_opts = popup.create('', popup_opts.prompt)
   local prompt_bufnr = a.nvim_win_get_buf(prompt_win)
-  a.nvim_win_set_option(prompt_win, 'winhl', 'Normal:TelescopeNormal')
+  a.nvim_win_set_option(prompt_win, 'winhl', 'Normal:ActionsNormal')
   a.nvim_win_set_option(prompt_win, 'winblend', self.window.winblend)
   local prompt_border_win = prompt_opts.border and prompt_opts.border.win_id
-  if prompt_border_win then vim.api.nvim_win_set_option(prompt_border_win, 'winhl', 'Normal:TelescopePromptBorder') end
+  if prompt_border_win then vim.api.nvim_win_set_option(prompt_border_win, 'winhl', 'Normal:ActionsPromptBorder') end
 
   -- Prompt prefix
   local prompt_prefix = self.prompt_prefix
@@ -361,7 +361,7 @@ function Picker:find()
     end
     vim.fn.prompt_setprompt(prompt_bufnr, prompt_prefix)
 
-    a.nvim_buf_add_highlight(prompt_bufnr, ns_telescope_prompt_prefix, 'TelescopePromptPrefix', 0, 0, #prompt_prefix)
+    a.nvim_buf_add_highlight(prompt_bufnr, ns_actions_prompt_prefix, 'ActionsPromptPrefix', 0, 0, #prompt_prefix)
   end
 
   -- Temporarily disabled: Draw the screen ASAP. This makes things feel speedier.
@@ -386,8 +386,8 @@ function Picker:find()
     end
 
     local padding = string.rep(" ", vim.api.nvim_win_get_width(prompt_win) - #current_prompt - #text - 3)
-    vim.api.nvim_buf_clear_namespace(prompt_bufnr, ns_telescope_prompt, 0, 1)
-    vim.api.nvim_buf_set_virtual_text(prompt_bufnr, ns_telescope_prompt, 0, { {padding .. text, "NonText"} }, {})
+    vim.api.nvim_buf_clear_namespace(prompt_bufnr, ns_actions_prompt, 0, 1)
+    vim.api.nvim_buf_set_virtual_text(prompt_bufnr, ns_actions_prompt, 0, { {padding .. text, "NonText"} }, {})
 
     self:_increment("status")
   end
@@ -550,7 +550,7 @@ function Picker:find()
 
   -- TODO: Use WinLeave as well?
   local on_buf_leave = string.format(
-    [[  autocmd BufLeave <buffer> ++nested ++once :silent lua require('telescope.pickers').on_close_prompt(%s)]],
+    [[  autocmd BufLeave <buffer> ++nested ++once :silent lua require('actions.pickers').on_close_prompt(%s)]],
     prompt_bufnr)
 
   vim.cmd([[augroup PickerInsert]])
@@ -580,7 +580,7 @@ function Picker:find()
   mappings.apply_keymap(prompt_bufnr, self.attach_mappings, config.values.mappings)
 
   -- Do filetype last, so that users can register at the last second.
-  pcall(a.nvim_buf_set_option, prompt_bufnr, 'filetype', 'TelescopePrompt')
+  pcall(a.nvim_buf_set_option, prompt_bufnr, 'filetype', 'ActionsPrompt')
 
   if self.default_text then
     vim.api.nvim_buf_set_lines(prompt_bufnr, 0, 1, false, {self.default_text})
@@ -668,8 +668,8 @@ function Picker:display_multi_select(results_bufnr)
     if index then
       vim.api.nvim_buf_add_highlight(
         results_bufnr,
-        ns_telescope_selection,
-        "TelescopeMultiSelection",
+        ns_actions_selection,
+        "ActionsMultiSelection",
         self:get_row(index),
         0,
         -1
@@ -765,19 +765,19 @@ function Picker:set_selection(row)
     end
     a.nvim_buf_set_lines(results_bufnr, row, row + 1, false, {display})
 
-    a.nvim_buf_clear_namespace(results_bufnr, ns_telescope_selection, 0, -1)
+    a.nvim_buf_clear_namespace(results_bufnr, ns_actions_selection, 0, -1)
     a.nvim_buf_add_highlight(
       results_bufnr,
-      ns_telescope_selection,
-      'TelescopeSelectionCaret',
+      ns_actions_selection,
+      'ActionsSelectionCaret',
       row,
       0,
       #caret
     )
     a.nvim_buf_add_highlight(
       results_bufnr,
-      ns_telescope_selection,
-      'TelescopeSelection',
+      ns_actions_selection,
+      'ActionsSelection',
       row,
       #caret,
       -1
@@ -848,7 +848,7 @@ function Picker:entry_adder(index, entry, score)
     if set_ok and display_highlights then
       -- TODO: This should actually be done during the cursor moving stuff annoyingly.... didn't see this bug yesterday.
       for _, hl_block in ipairs(display_highlights) do
-        a.nvim_buf_add_highlight(self.results_bufnr, ns_telescope_entry, hl_block[2], row, #prefix + hl_block[1][1], #prefix + hl_block[1][2])
+        a.nvim_buf_add_highlight(self.results_bufnr, ns_actions_entry, hl_block[2], row, #prefix + hl_block[1][1], #prefix + hl_block[1][2])
       end
     end
 

@@ -66,7 +66,7 @@ width =
     }
 }
 
-https://github.com/nvim-lua/telescope.nvim/pull/43
+https://github.com/nvim-lua/actions.nvim/pull/43
 
 After we get layout, we should try and make top-down sorting work.
 That's the next step to scrolling.
@@ -85,7 +85,7 @@ That's the next step to scrolling.
 
 --]]
 
-local get_default = require('telescope.utils').get_default
+local get_default = require('actions.utils').get_default
 
 local resolver = {}
 

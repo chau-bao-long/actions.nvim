@@ -1,9 +1,9 @@
 local has_devicons, devicons = pcall(require, 'nvim-web-devicons')
 
-local conf = require('telescope.config').values
-local entry_display = require('telescope.pickers.entry_display')
-local path = require('telescope.path')
-local utils = require('telescope.utils')
+local conf = require('actions.config').values
+local entry_display = require('actions.pickers.entry_display')
+local path = require('actions.path')
+local utils = require('actions.utils')
 
 local get_default = utils.get_default
 

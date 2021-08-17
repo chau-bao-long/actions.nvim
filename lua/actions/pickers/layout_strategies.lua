@@ -1,6 +1,6 @@
 --[[
 
-Layout strategies are different functions to position telescope.
+Layout strategies are different functions to position actions.
 
 horizontal:
 - Supports `prompt_position`, `preview_cutoff`
@@ -24,8 +24,8 @@ end
 
 --]]
 
-local config = require('telescope.config')
-local resolve = require("telescope.config.resolve")
+local config = require('actions.config')
+local resolve = require("actions.config.resolve")
 
 -- Check if there are any borders. Right now it's a little raw as
 -- there are a few things that contribute to the border

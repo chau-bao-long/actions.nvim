@@ -1,5 +1,5 @@
 -- Keep the values around between reloads
-_TelescopeConfigurationValues = _TelescopeConfigurationValues or {}
+_ActionsConfigurationValues = _ActionsConfigurationValues or {}
 
 local function first_non_null(...)
   local n = select('#', ...)
@@ -12,14 +12,14 @@ local function first_non_null(...)
   end
 end
 
-local sorters = require('telescope.sorters')
+local sorters = require('actions.sorters')
 
 -- TODO: Add other major configuration points here.
 -- selection_strategy
 
 local config = {}
 
-config.values = _TelescopeConfigurationValues
+config.values = _ActionsConfigurationValues
 
 function config.set_defaults(defaults)
   defaults = defaults or {}

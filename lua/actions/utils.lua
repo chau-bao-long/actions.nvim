@@ -1,4 +1,4 @@
-local pathlib = require('telescope.path')
+local pathlib = require('actions.path')
 
 local utils = {}
 
@@ -94,7 +94,7 @@ utils.quickfix_items_to_entries = function(locations)
 end
 
 utils.new_ngram = function()
-  return require("telescope._private.NGram"):new()
+  return require("actions._private.NGram"):new()
 end
 
 -- TODO: Figure out how to do this... could include in plenary :)

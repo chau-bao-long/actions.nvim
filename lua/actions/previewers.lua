@@ -1,10 +1,10 @@
 local context_manager = require('plenary.context_manager')
 
-local config = require('telescope.config')
-local debounce = require('telescope.debounce')
-local from_entry = require('telescope.from_entry')
-local log = require('telescope.log')
-local utils = require('telescope.utils')
+local config = require('actions.config')
+local debounce = require('actions.debounce')
+local from_entry = require('actions.from_entry')
+local log = require('actions.log')
+local utils = require('actions.utils')
 
 local flatten = vim.tbl_flatten
 local buf_delete = utils.buf_delete
@@ -113,7 +113,7 @@ local get_maker = function(opts)
   return maker
 end
 
-local previewer_ns = vim.api.nvim_create_namespace('telescope.previewers')
+local previewer_ns = vim.api.nvim_create_namespace('actions.previewers')
 
 local with_preview_window = function(status, bufnr, callable)
   if bufnr and vim.api.nvim_buf_call and false then

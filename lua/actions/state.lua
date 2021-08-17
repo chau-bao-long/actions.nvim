@@ -1,23 +1,23 @@
 local state = {}
 
-TelescopeGlobalState = TelescopeGlobalState or {}
-TelescopeGlobalState.global = TelescopeGlobalState.global or {}
+ActionsGlobalState = ActionsGlobalState or {}
+ActionsGlobalState.global = ActionsGlobalState.global or {}
 
 --- Set the status for a particular prompt bufnr
 function state.set_status(prompt_bufnr, status)
-  TelescopeGlobalState[prompt_bufnr] = status
+  ActionsGlobalState[prompt_bufnr] = status
 end
 
 function state.set_global_key(key, value)
-  TelescopeGlobalState.global[key] = value
+  ActionsGlobalState.global[key] = value
 end
 
 function state.get_global_key(key)
-  return TelescopeGlobalState.global[key]
+  return ActionsGlobalState.global[key]
 end
 
 function state.get_status(prompt_bufnr)
-  return TelescopeGlobalState[prompt_bufnr] or {}
+  return ActionsGlobalState[prompt_bufnr] or {}
 end
 
 function state.clear_status(prompt_bufnr)
@@ -25,7 +25,7 @@ function state.clear_status(prompt_bufnr)
 end
 
 function state.get_existing_prompts()
-  return vim.tbl_keys(TelescopeGlobalState)
+  return vim.tbl_keys(ActionsGlobalState)
 end
 
 return state

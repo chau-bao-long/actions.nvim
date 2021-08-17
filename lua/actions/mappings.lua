@@ -1,8 +1,8 @@
 -- TODO: Customize keymap
 local a = vim.api
 
-local actions = require('telescope.actions')
-local config = require('telescope.config')
+local actions = require('actions.actions')
+local config = require('actions.config')
 
 local mappings = {}
 
@@ -89,7 +89,7 @@ mappings.apply_keymap(42, <function>, {
   }
 })
 --]]
-local telescope_map = function(prompt_bufnr, mode, key_bind, key_func, opts)
+local actions_map = function(prompt_bufnr, mode, key_bind, key_func, opts)
   if not key_func then
     return
   end
@@ -115,7 +115,7 @@ local telescope_map = function(prompt_bufnr, mode, key_bind, key_func, opts)
     local map_string
     if opts.expr then
       map_string = string.format(
-        [[luaeval("require('telescope.mappings').execute_keymap(%s, %s)")]],
+        [[luaeval("require('actions.mappings').execute_keymap(%s, %s)")]],
         prompt_bufnr,
         key_id
       )
@@ -125,7 +125,7 @@ local telescope_map = function(prompt_bufnr, mode, key_bind, key_func, opts)
       end
 
       map_string = string.format(
-        "%s:lua require('telescope.mappings').execute_keymap(%s, %s)<CR>",
+        "%s:lua require('actions.mappings').execute_keymap(%s, %s)<CR>",
         prefix,
         prompt_bufnr,
         key_id
@@ -150,7 +150,7 @@ mappings.apply_keymap = function(prompt_bufnr, attach_mappings, buffer_keymap)
     local key_bind_internal = a.nvim_replace_termcodes(key_bind, true, true, true)
     applied_mappings[mode][key_bind_internal] = true
 
-    telescope_map(prompt_bufnr, mode, key_bind, key_func, opts)
+    actions_map(prompt_bufnr, mode, key_bind, key_func, opts)
   end
 
   if attach_mappings and not attach_mappings(prompt_bufnr, map) then
@@ -164,7 +164,7 @@ mappings.apply_keymap = function(prompt_bufnr, attach_mappings, buffer_keymap)
       local key_bind_internal = a.nvim_replace_termcodes(key_bind, true, true, true)
       if not applied_mappings[mode][key_bind_internal] then
         applied_mappings[mode][key_bind_internal] = true
-        telescope_map(prompt_bufnr, mode, key_bind, key_func)
+        actions_map(prompt_bufnr, mode, key_bind, key_func)
       end
     end
   end
@@ -177,13 +177,13 @@ mappings.apply_keymap = function(prompt_bufnr, attach_mappings, buffer_keymap)
       local key_bind_internal = a.nvim_replace_termcodes(key_bind, true, true, true)
       if not applied_mappings[mode][key_bind_internal] then
         applied_mappings[mode][key_bind_internal] = true
-        telescope_map(prompt_bufnr, mode, key_bind, key_func)
+        actions_map(prompt_bufnr, mode, key_bind, key_func)
       end
     end
   end
 
   vim.cmd(string.format(
-    [[autocmd BufDelete %s :lua require('telescope.mappings').clear(%s)]],
+    [[autocmd BufDelete %s :lua require('actions.mappings').clear(%s)]],
     prompt_bufnr,
     prompt_bufnr
   ))

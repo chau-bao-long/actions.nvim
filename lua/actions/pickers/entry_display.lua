@@ -1,4 +1,4 @@
-local log = require('telescope.log')
+local log = require('actions.log')
 
 local entry_display = {}
 

@@ -6,13 +6,13 @@ extensions._config = {}
 extensions.manager = setmetatable({}, {
   __index = function(t, k)
     -- See if this extension exists.
-    local ok, ext = pcall(require, 'telescope._extensions.' .. k)
+    local ok, ext = pcall(require, 'actions._extensions.' .. k)
     if not ok then
       error("This extenion doesn't exist or is not installed: " .. k .. "\n" .. ext)
     end
 
     if ext.setup then
-      ext.setup(extensions._config[k] or {}, require('telescope.config').values)
+      ext.setup(extensions._config[k] or {}, require('actions.config').values)
     end
 
     t[k] = ext.exports or {}
@@ -29,7 +29,7 @@ extensions.manager = setmetatable({}, {
 ---
 ---         Called when first loading the extension.
 ---         The first parameter is the config passed by the user
----             in telescope setup. The second parameter is the resulting
+---             in actions setup. The second parameter is the resulting
 ---             config.values after applying the users setup defaults.
 ---
 ---         It is acceptable for a plugin to override values in config,
@@ -40,7 +40,7 @@ extensions.manager = setmetatable({}, {
 ---         table
 ---
 ---         Only the items in `exports` will be exposed on the  resulting
----         module that users can access via require('telescope').extensions.foo
+---         module that users can access via require('actions').extensions.foo
 ---
 ---         Other things in the module will not be accessible. This is the public API
 ---         for your extension. Consider not breaking it a lot :laugh:

@@ -1,5 +1,5 @@
-local log = require('telescope.log')
-local util = require('telescope.utils')
+local log = require('actions.log')
+local util = require('actions.utils')
 
 local sorters = {}
 
@@ -111,11 +111,11 @@ end
 
 sorters.Sorter = Sorter
 
-TelescopeCachedTails = TelescopeCachedTails or nil
-if not TelescopeCachedTails then
+ActionsCachedTails = ActionsCachedTails or nil
+if not ActionsCachedTails then
   local os_sep = util.get_separator()
   local match_string = '[^' .. os_sep .. ']*$'
-  TelescopeCachedTails = setmetatable({}, {
+  ActionsCachedTails = setmetatable({}, {
     __index = function(t, k)
       local tail = string.match(k, match_string)
 
@@ -125,7 +125,7 @@ if not TelescopeCachedTails then
   })
 end
 
-TelescopeCachedUppers = TelescopeCachedUppers or setmetatable({}, {
+ActionsCachedUppers = ActionsCachedUppers or setmetatable({}, {
   __index = function(t, k)
     local obj = {}
     for i = 1, #k do
@@ -140,7 +140,7 @@ TelescopeCachedUppers = TelescopeCachedUppers or setmetatable({}, {
   end
 })
 
-TelescopeCachedNgrams = TelescopeCachedNgrams or {}
+ActionsCachedNgrams = ActionsCachedNgrams or {}
 
 -- TODO: Match on upper case words
 -- TODO: Match on last match
@@ -150,8 +150,8 @@ sorters.get_fuzzy_file = function(opts)
   local ngram_len = opts.ngram_len or 2
 
   local function overlapping_ngrams(s, n)
-    if TelescopeCachedNgrams[s] and TelescopeCachedNgrams[s][n] then
-      return TelescopeCachedNgrams[s][n]
+    if ActionsCachedNgrams[s] and ActionsCachedNgrams[s][n] then
+      return ActionsCachedNgrams[s][n]
     end
 
     local R = {}
@@ -159,11 +159,11 @@ sorters.get_fuzzy_file = function(opts)
       R[#R+1] = s:sub(i, i+n-1)
     end
 
-    if not TelescopeCachedNgrams[s] then
-      TelescopeCachedNgrams[s] = {}
+    if not ActionsCachedNgrams[s] then
+      ActionsCachedNgrams[s] = {}
     end
 
-    TelescopeCachedNgrams[s][n] = R
+    ActionsCachedNgrams[s][n] = R
 
     return R
   end
@@ -186,8 +186,8 @@ sorters.get_fuzzy_file = function(opts)
       -- Contains the original string
       local contains_string = line_lower:find(prompt_lower, 1, true)
 
-      local prompt_uppers = TelescopeCachedUppers[prompt]
-      local line_uppers = TelescopeCachedUppers[line]
+      local prompt_uppers = ActionsCachedUppers[prompt]
+      local line_uppers = ActionsCachedUppers[line]
 
       local uppers_matching = 0
       for k, _ in pairs(prompt_uppers) do
@@ -197,7 +197,7 @@ sorters.get_fuzzy_file = function(opts)
       end
 
       -- TODO: Consider case senstivity
-      local tail = TelescopeCachedTails[line_lower]
+      local tail = ActionsCachedTails[line_lower]
       local contains_tail = tail:find(prompt, 1, true)
 
       local consecutive_matches = 0
@@ -259,8 +259,8 @@ sorters.get_generic_fuzzy_sorter = function(opts)
   local ngram_len = opts.ngram_len or 2
 
   local function overlapping_ngrams(s, n)
-    if TelescopeCachedNgrams[s] and TelescopeCachedNgrams[s][n] then
-      return TelescopeCachedNgrams[s][n]
+    if ActionsCachedNgrams[s] and ActionsCachedNgrams[s][n] then
+      return ActionsCachedNgrams[s][n]
     end
 
     local R = {}
@@ -268,11 +268,11 @@ sorters.get_generic_fuzzy_sorter = function(opts)
       R[#R+1] = s:sub(i, i+n-1)
     end
 
-    if not TelescopeCachedNgrams[s] then
-      TelescopeCachedNgrams[s] = {}
+    if not ActionsCachedNgrams[s] then
+      ActionsCachedNgrams[s] = {}
     end
 
-    TelescopeCachedNgrams[s][n] = R
+    ActionsCachedNgrams[s][n] = R
 
     return R
   end
@@ -368,7 +368,7 @@ end
 -- Sorter using the fzy algorithm
 sorters.get_fzy_sorter = function(opts)
   opts = opts or {}
-  local fzy = opts.fzy_mod or require('telescope.algos.fzy')
+  local fzy = opts.fzy_mod or require('actions.algos.fzy')
   local OFFSET = -fzy.get_score_floor()
 
   return sorters.Sorter:new{
@@ -391,13 +391,13 @@ sorters.get_fzy_sorter = function(opts)
 
       -- Poor non-empty matches can also have negative values. Offset the score
       -- so that all values are positive, then invert to match the
-      -- telescope.Sorter "smaller is better" convention. Note that for exact
+      -- actions.Sorter "smaller is better" convention. Note that for exact
       -- matches, fzy returns +inf, which when inverted becomes 0.
       return 1 / (fzy_score + OFFSET)
     end,
 
     -- The fzy.positions function, which returns an array of string indices, is
-    -- compatible with telescope's conventions. It's moderately wasteful to
+    -- compatible with actions's conventions. It's moderately wasteful to
     -- call call fzy.score(x,y) followed by fzy.positions(x,y): both call the
     -- fzy.compute function, which does all the work. But, this doesn't affect
     -- perceived performance.
@@ -409,7 +409,7 @@ end
 
 sorters.highlighter_only = function(opts)
   opts = opts or {}
-  local fzy = opts.fzy_mod or require('telescope.algos.fzy')
+  local fzy = opts.fzy_mod or require('actions.algos.fzy')
 
   return Sorter:new {
     scoring_function = function() return 0 end,
@@ -424,7 +424,7 @@ end
 sorters.get_levenshtein_sorter = function()
   return Sorter:new {
     scoring_function = function(_, prompt, line)
-      return require('telescope.algos.string_distance')(prompt, line)
+      return require('actions.algos.string_distance')(prompt, line)
     end
   }
 end

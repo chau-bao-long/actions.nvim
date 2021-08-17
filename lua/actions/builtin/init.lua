@@ -5,7 +5,7 @@ Meant for both example and for easy startup.
 
 Any of these functions can just be called directly by doing:
 
-:lua require('telescope.builtin').__name__()
+:lua require('actions.builtin').__name__()
 
 This will use the default configuration options.
   Other configuration options still in flux at the moment
@@ -18,33 +18,33 @@ if 1 ~= vim.fn.has('nvim-0.5') then
 end
 
 if 2 > vim.o.report then
-  vim.api.nvim_err_writeln(string.format("[telescope] It seems you have `set report=%s`", vim.o.report))
-  vim.api.nvim_err_writeln("[telescope] Instead, change 'report' back to its default value. `set report=2`.")
-  vim.api.nvim_err_writeln("[telescope] If you do not, you will have a bad experience")
+  vim.api.nvim_err_writeln(string.format("[actions] It seems you have `set report=%s`", vim.o.report))
+  vim.api.nvim_err_writeln("[actions] Instead, change 'report' back to its default value. `set report=2`.")
+  vim.api.nvim_err_writeln("[actions] If you do not, you will have a bad experience")
 end
 
 
-local actions = require('telescope.actions')
-local finders = require('telescope.finders')
-local make_entry = require('telescope.make_entry')
-local path = require('telescope.path')
-local pickers = require('telescope.pickers')
-local previewers = require('telescope.previewers')
-local sorters = require('telescope.sorters')
-local utils = require('telescope.utils')
+local actions = require('actions.actions')
+local finders = require('actions.finders')
+local make_entry = require('actions.make_entry')
+local path = require('actions.path')
+local pickers = require('actions.pickers')
+local previewers = require('actions.previewers')
+local sorters = require('actions.sorters')
+local utils = require('actions.utils')
 
-local conf = require('telescope.config').values
+local conf = require('actions.config').values
 
 local filter = vim.tbl_filter
 local flatten = vim.tbl_flatten
 
 local builtin = {}
 
-builtin.git_files = require('telescope.builtin.git').files
-builtin.git_commits = require('telescope.builtin.git').commits
-builtin.git_bcommits = require('telescope.builtin.git').bcommits
-builtin.git_branches = require('telescope.builtin.git').branches
-builtin.git_status = require('telescope.builtin.git').status
+builtin.git_files = require('actions.builtin.git').files
+builtin.git_commits = require('actions.builtin.git').commits
+builtin.git_bcommits = require('actions.builtin.git').bcommits
+builtin.git_branches = require('actions.builtin.git').branches
+builtin.git_status = require('actions.builtin.git').status
 
 builtin.commands = function()
   pickers.new({}, {
@@ -446,7 +446,7 @@ builtin.vim_options = function(opts)
         -- TODO: Make this actually work.
 
         -- actions.close(prompt_bufnr)
-        -- vim.api.nvim_win_set_var(vim.fn.nvim_get_current_win(), "telescope", 1)
+        -- vim.api.nvim_win_set_var(vim.fn.nvim_get_current_win(), "actions", 1)
         -- print(prompt_bufnr)
         -- print(vim.fn.bufnr())
         -- vim.cmd([[ autocmd BufEnter <buffer> ++nested ++once startinsert!]])
@@ -557,7 +557,7 @@ builtin.reloader = function(opts)
 end
 
 -- TODO: What the heck should we do for accepting this.
---  vim.fn.setreg("+", "nnoremap $TODO :lua require('telescope.builtin').<whatever>()<CR>")
+--  vim.fn.setreg("+", "nnoremap $TODO :lua require('actions.builtin').<whatever>()<CR>")
 -- TODO: Can we just do the names instead?
 builtin.builtin = function(opts)
   opts = opts or {}
@@ -581,7 +581,7 @@ builtin.builtin = function(opts)
   end
 
   pickers.new(opts, {
-    prompt_title = 'Telescope Builtin',
+    prompt_title = 'Actions Builtin',
     finder    = finders.new_table {
       results     = objs,
       entry_maker = make_entry.gen_from_quickfix(opts),

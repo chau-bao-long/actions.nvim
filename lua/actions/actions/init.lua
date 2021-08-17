@@ -2,11 +2,11 @@
 
 local a = vim.api
 
-local log = require('telescope.log')
-local path = require('telescope.path')
-local state = require('telescope.state')
+local log = require('actions.log')
+local path = require('actions.path')
+local state = require('actions.state')
 
-local transform_mod = require('telescope.actions.mt').transform_mod
+local transform_mod = require('actions.actions.mt').transform_mod
 
 local actions = setmetatable({}, {
   __index = function(_, k)
@@ -56,7 +56,7 @@ function actions._goto_file_selection(prompt_bufnr, command)
   local entry = actions.get_selected_entry(prompt_bufnr)
 
   if not entry then
-    print("[telescope] Nothing currently selected")
+    print("[actions] Nothing currently selected")
     return
   else
     local filename, row, col
@@ -222,7 +222,7 @@ actions.run_builtin = function(prompt_bufnr)
   actions.close(prompt_bufnr)
   vim.cmd [[startinsert]]
 
-  require('telescope.builtin')[entry.text]()
+  require('actions.builtin')[entry.text]()
 end
 
 -- TODO: Think about how to do this.

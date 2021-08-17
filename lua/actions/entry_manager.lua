@@ -1,4 +1,4 @@
-local log = require("telescope.log")
+local log = require("actions.log")
 
 local EntryManager = {}
 EntryManager.__index = EntryManager
