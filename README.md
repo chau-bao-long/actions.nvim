@@ -61,15 +61,17 @@ let g:databases = [
 
 ```
 
+#### Commands
+
 ```viml
 " Take actions from g:commonActions variable
-nnoremap <space><space> :lua require'actions.builtin'.actions(require('actions.themes').get_dropdown({ winblend = 10, data = 'commonActions' }))<cr>
+nnoremap <space><space> :CommonActions<cr>
 
 " Take actions from g:databases
-nnoremap <space>se :lua require'actions.builtin'.actions(require('actions.themes').get_dropdown({ winblend = 10, data = 'databases' }))<cr>
+nnoremap <space>se :DatabaseActions<cr>
 
 " Take actions base on file type, g:kotlinActions for kotlin filetype, g:phpActions for php filetype, g:XXXActions for XXX filetype
-nnoremap <space>k :lua require'actions.builtin'.actions(require('actions.themes').get_dropdown({ winblend = 10, data = 'fromFileType' }))<cr>
+nnoremap <space>k :FileTypeActions<cr>
 ```
 
 ## Contributing
